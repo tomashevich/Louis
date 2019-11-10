@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Louis.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191109114020_CreateProducts")]
-    partial class CreateProducts
+    [Migration("20191109153550_CreateProduct")]
+    partial class CreateProduct
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,18 +21,18 @@ namespace Louis.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Louis.Models.Product", b =>
+            modelBuilder.Entity("Louis.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Code");
 
-                    b.Property<DateTime>("LastUpdated");
+                    b.Property<string>("ImageUrl");
+
+                    b.Property<DateTime>("ModifiedOn");
 
                     b.Property<string>("Name");
-
-                    b.Property<string>("Photo");
 
                     b.Property<decimal>("Price");
 

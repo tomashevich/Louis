@@ -1,0 +1,74 @@
+﻿using Louis.Data;
+using Louis.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+
+namespace Louis.Repositories
+{
+    public class ProductRepository : IProductRepository<Product>
+    {
+        private readonly  ApplicationDbContext  _context;
+
+        public ProductRepository(ApplicationDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+        public async Task Add(Product entity)
+        {
+            entity.Id = Guid.NewGuid();
+            _context.Add(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Delete(Guid id)
+        {
+            var product = await _context.Product.FindAsync(id);
+            _context.Product.Remove(product);
+            await _context.SaveChangesAsync();
+        }
+
+        public IEnumerable<Product> Get(Expression<Func<Product, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Product>> GetAll()
+        {
+            return await _context.Product.ToListAsync();
+        }
+
+        public async Task<Product> GetById(Guid id)
+        {
+            return await _context.Product.FindAsync(id);
+        }
+
+        public async Task Update(Product entity)
+        {
+            try
+            {
+                _context.Update(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(entity.Id))
+                {
+                    throw new KeyNotFoundException();
+                   
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+        private bool ProductExists(Guid id)
+        {
+            return _context.Product.Any(e => e.Id == id);
+        }
+    }
+}

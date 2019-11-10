@@ -7,22 +7,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Louis.Data;
 using Louis.Models;
+using Louis.Entities;
+using Louis.Repositories;
+using Louis.Services;
 
 namespace Louis.Controllers
 {
     public class MyProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IProductService _productService;
 
-        public MyProductsController(ApplicationDbContext context)
+        public MyProductsController(ApplicationDbContext context, IProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
         // GET: MyProducts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Product.ToListAsync());
+            //need convert to Model.roducts
+            return View(await _productService.GetAll());
         }
 
         // GET: MyProducts/Details/5
@@ -33,13 +39,12 @@ namespace Louis.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Product
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var product = await _productService.GetById(id.Value);
+            //need convert product to Model
             if (product == null)
             {
                 return NotFound();
             }
-
             return View(product);
         }
 
@@ -54,13 +59,13 @@ namespace Louis.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Code,Name,Photo,Price,LastUpdated")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Code,Name,Photo,Price,LastUpdated")] Models.Product product)
         {
             if (ModelState.IsValid)
             {
                 product.Id = Guid.NewGuid();
-                _context.Add(product);
-                await _context.SaveChangesAsync();
+                var p = new Entities.Product(); //need to convert to model
+                await _productService.Add(p);
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -74,7 +79,8 @@ namespace Louis.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Product.FindAsync(id);
+            var product = await _productService.GetById(id.Value);
+            //need convert product to Model
             if (product == null)
             {
                 return NotFound();
@@ -87,7 +93,7 @@ namespace Louis.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,Name,Photo,Price,LastUpdated")] Product product)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,Name,Photo,Price,LastUpdated")] Models.Product product)
         {
             if (id != product.Id)
             {
@@ -98,20 +104,19 @@ namespace Louis.Controllers
             {
                 try
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    //need convert from model
+                    await _productService.Update(new Entities.Product());
+                }
+                catch (KeyNotFoundException)
+                {
+                    return NotFound();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //maybe add logs ?
+                    throw;
                 }
+                              
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -125,13 +130,12 @@ namespace Louis.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Product
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var product = await _productService.GetById(id.Value);
+            //need convert product to Model
             if (product == null)
             {
                 return NotFound();
             }
-
             return View(product);
         }
 
@@ -140,15 +144,9 @@ namespace Louis.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var product = await _context.Product.FindAsync(id);
-            _context.Product.Remove(product);
-            await _context.SaveChangesAsync();
+            await _productService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExists(Guid id)
-        {
-            return _context.Product.Any(e => e.Id == id);
-        }
     }
 }

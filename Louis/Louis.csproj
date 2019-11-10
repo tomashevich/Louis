@@ -6,6 +6,11 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20191109114020_CreateProducts.cs" />
+    <Compile Remove="Data\Migrations\20191109114020_CreateProducts.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -16,7 +21,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Services\" />
     <Folder Include="Views\Products\" />
   </ItemGroup>
 

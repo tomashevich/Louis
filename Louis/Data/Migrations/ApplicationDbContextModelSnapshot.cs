@@ -19,18 +19,18 @@ namespace Louis.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Louis.Models.Product", b =>
+            modelBuilder.Entity("Louis.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Code");
 
-                    b.Property<DateTime>("LastUpdated");
+                    b.Property<string>("ImageUrl");
+
+                    b.Property<DateTime>("ModifiedOn");
 
                     b.Property<string>("Name");
-
-                    b.Property<string>("Photo");
 
                     b.Property<decimal>("Price");
 

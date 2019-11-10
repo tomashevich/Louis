@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Louis.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Louis.Repositories;
+using Louis.Entities;
+using Louis.Services;
 
 namespace Louis
 {
@@ -41,6 +44,9 @@ namespace Louis
             services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddScoped<IProductRepository<Product>, ProductRepository>();
+            services.AddScoped<IProductService, ProductService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
