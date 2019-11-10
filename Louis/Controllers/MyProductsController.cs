@@ -10,6 +10,7 @@ using Louis.Models;
 using Louis.Entities;
 using Louis.Repositories;
 using Louis.Services;
+using AutoMapper;
 
 namespace Louis.Controllers
 {
@@ -17,18 +18,22 @@ namespace Louis.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IProductService _productService;
+        private readonly IMapper _mapper;
 
-        public MyProductsController(ApplicationDbContext context, IProductService productService)
+
+        public MyProductsController(ApplicationDbContext context, IProductService productService, IMapper mapper)
         {
             _context = context;
             _productService = productService;
+            _mapper = mapper;
         }
 
         // GET: MyProducts
         public async Task<IActionResult> Index()
-        {
-            //need convert to Model.roducts
-            return View(await _productService.GetAll());
+        {           
+            var products = await _productService.GetAll();
+            var models = products.Select(p => _mapper.Map<Models.Product>(p));
+            return View(models);
         }
 
         // GET: MyProducts/Details/5
@@ -40,12 +45,12 @@ namespace Louis.Controllers
             }
 
             var product = await _productService.GetById(id.Value);
-            //need convert product to Model
+      
             if (product == null)
             {
                 return NotFound();
             }
-            return View(product);
+            return View(_mapper.Map<Models.Product>(product));
         }
 
         // GET: MyProducts/Create
@@ -64,8 +69,8 @@ namespace Louis.Controllers
             if (ModelState.IsValid)
             {
                 product.Id = Guid.NewGuid();
-                var p = new Entities.Product(); //need to convert to model
-                await _productService.Add(p);
+             
+                await _productService.Add(_mapper.Map<Entities.Product>(product));
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -80,12 +85,12 @@ namespace Louis.Controllers
             }
 
             var product = await _productService.GetById(id.Value);
-            //need convert product to Model
+         
             if (product == null)
             {
                 return NotFound();
             }
-            return View(product);
+            return View(_mapper.Map<Models.Product>(product));
         }
 
         // POST: MyProducts/Edit/5
@@ -105,7 +110,7 @@ namespace Louis.Controllers
                 try
                 {
                     //need convert from model
-                    await _productService.Update(new Entities.Product());
+                    await _productService.Update(_mapper.Map<Entities.Product>(product));
                 }
                 catch (KeyNotFoundException)
                 {
@@ -131,12 +136,12 @@ namespace Louis.Controllers
             }
 
             var product = await _productService.GetById(id.Value);
-            //need convert product to Model
+           
             if (product == null)
             {
                 return NotFound();
             }
-            return View(product);
+            return View(_mapper.Map<Models.Product>(product));
         }
 
         // POST: MyProducts/Delete/5

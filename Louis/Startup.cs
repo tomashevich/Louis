@@ -12,10 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Louis.Data;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+
 using Louis.Repositories;
 using Louis.Entities;
 using Louis.Services;
+using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using Louis.mapping;
 
 namespace Louis
 {
@@ -47,6 +50,15 @@ namespace Louis
 
             services.AddScoped<IProductRepository<Product>, ProductRepository>();
             services.AddScoped<IProductService, ProductService>();
+
+            // Auto Mapper Configurations
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
