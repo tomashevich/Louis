@@ -11,6 +11,9 @@ using Louis.Entities;
 using Louis.Repositories;
 using Louis.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace Louis.Controllers
 {
@@ -19,13 +22,14 @@ namespace Louis.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
+        private readonly IHostingEnvironment _env;
 
-
-        public MyProductsController(ApplicationDbContext context, IProductService productService, IMapper mapper)
+        public MyProductsController(ApplicationDbContext context, IProductService productService, IMapper mapper, IHostingEnvironment environment)
         {
             _context = context;
             _productService = productService;
             _mapper = mapper;
+            _env = environment;
         }
 
         // GET: MyProducts
@@ -153,5 +157,34 @@ namespace Louis.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost, ActionName("ImageUpload")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ImageUpload(IFormFile file)
+        {
+            var filePath = "";
+            if (file != null && file.Length > 0)
+            {
+                var imagePath = @"\Upload\Images\";
+                var uploadPath = _env.WebRootPath + imagePath;
+
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
+                var fileName = Path.GetFileName(Guid.NewGuid().ToString() + "." + file.FileName.Split(".")[1].ToLower());
+                var fullPath = uploadPath + fileName;
+
+                imagePath = imagePath + @"\";
+                filePath = @".." + Path.Combine(imagePath, fileName);
+
+                using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+
+                ViewData["FileLocation"] = filePath;
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
