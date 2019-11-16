@@ -14,6 +14,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.Extensions.Logging;
 
 namespace Louis.Controllers
 {
@@ -23,13 +24,15 @@ namespace Louis.Controllers
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
         private readonly IHostingEnvironment _env;
+        private readonly ILogger<MyProductsController> _logger;
 
-        public MyProductsController(ApplicationDbContext context, IProductService productService, IMapper mapper, IHostingEnvironment environment)
+        public MyProductsController(ApplicationDbContext context, IProductService productService, IMapper mapper, IHostingEnvironment environment, ILogger<MyProductsController> logger)
         {
             _context = context;
             _productService = productService;
             _mapper = mapper;
             _env = environment;
+            _logger = logger;
         }
 
         // GET: MyProducts
@@ -126,9 +129,9 @@ namespace Louis.Controllers
                 {
                     return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    //maybe add logs ?
+                    _logger.LogError(ex.Message);
                     throw;
                 }
                               
