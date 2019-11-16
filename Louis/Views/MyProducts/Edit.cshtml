@@ -11,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" runat="server">
+        <form asp-action="Edit" runat="server" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -39,27 +39,25 @@
                 <input asp-for="LastUpdated" class="form-control" />
                 <span asp-validation-for="LastUpdated" class="text-danger"></span>
             </div>
-         
+            <img src="@Model.Photo" width="300" height="200" />
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Photo:</label>
+                <div class="col-sm-10">
+                    <div class="custom-file">
+                        <input class="form-control custom-file-input" type="file" name="file" id="fileInput" />
+                        <label class="custom-file-label">...</label>
+                    </div>
+                </div>
+               
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
 
         </form>
      
-    <form asp-controller="MyProducts" asp-action="ImageUpload" method="post" enctype="multipart/form-data">
-     
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Photo:</label>
-            <div class="col-sm-10">
-                <div class="custom-file">
-                    <input class="form-control custom-file-input" type="file" name="file" id="fileInput" />
-                    <label class="custom-file-label">...</label>
-                </div>
-            </div>
-            <button  type="submit"  class="file-upload">Upload</button>
-        </div>
-        <img src="@ViewData["FileLocation"]" width="300" height="200" />
-        </form>
     </div>
 </div>
 

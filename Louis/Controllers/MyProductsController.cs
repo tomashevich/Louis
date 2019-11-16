@@ -102,7 +102,7 @@ namespace Louis.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,Name,Photo,Price,LastUpdated")] Models.Product product)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,Name,Photo,Price,LastUpdated")] Models.Product product, IFormFile file)
         {
             if (id != product.Id)
             {
@@ -113,8 +113,14 @@ namespace Louis.Controllers
             {
                 try
                 {
-                    //need convert from model
-                    await _productService.Update(_mapper.Map<Entities.Product>(product));
+
+                    var productToSave = _mapper.Map<Entities.Product>(product);
+                    if (file != null)
+                    {
+                        var imageUrl = await ImageUpload(file);
+                        productToSave.ImageUrl = imageUrl;
+                    }
+                    await _productService.Update(productToSave);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -157,9 +163,7 @@ namespace Louis.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost, ActionName("ImageUpload")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ImageUpload(IFormFile file)
+       private async Task<string> ImageUpload(IFormFile file)
         {
             var filePath = "";
             if (file != null && file.Length > 0)
@@ -182,9 +186,9 @@ namespace Louis.Controllers
                     await file.CopyToAsync(fileStream);
                 }
 
-                ViewData["FileLocation"] = filePath;
+                //ViewData["FileLocation"] = filePath;
             }
-            return RedirectToAction(nameof(Index));
+            return filePath;
         }
     }
 }
