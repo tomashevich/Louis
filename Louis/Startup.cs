@@ -19,6 +19,8 @@ using Louis.Services;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Louis.mapping;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
 
 namespace Louis
 {
@@ -87,6 +89,13 @@ namespace Louis
 
             app.UseAuthentication();
 
+            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Upload\\Images"))
+                 
+            });
             // Register the Swagger generator and the Swagger UI middlewares
             app.UseOpenApi();
             app.UseSwaggerUi3();

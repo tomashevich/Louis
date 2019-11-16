@@ -178,8 +178,9 @@ namespace Louis.Controllers
                 var fileName = Path.GetFileName(Guid.NewGuid().ToString() + "." + file.FileName.Split(".")[1].ToLower());
                 var fullPath = uploadPath + fileName;
 
-                imagePath = imagePath + @"\";
-                filePath = @".." + Path.Combine(imagePath, fileName);
+                // imagePath = imagePath + @"\";
+                //filePath =  Path.Combine(@"~/", fileName);
+                filePath = fileName;
 
                 using (var fileStream = new FileStream(fullPath, FileMode.Create))
                 {
