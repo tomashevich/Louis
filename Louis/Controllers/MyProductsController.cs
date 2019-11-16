@@ -165,7 +165,7 @@ namespace Louis.Controllers
 
        private async Task<string> ImageUpload(IFormFile file)
         {
-            var filePath = "";
+            var fileName = "";
             if (file != null && file.Length > 0)
             {
                 var imagePath = @"\Upload\Images\";
@@ -175,21 +175,15 @@ namespace Louis.Controllers
                 {
                     Directory.CreateDirectory(uploadPath);
                 }
-                var fileName = Path.GetFileName(Guid.NewGuid().ToString() + "." + file.FileName.Split(".")[1].ToLower());
+                 fileName = Path.GetFileName(Guid.NewGuid().ToString() + "." + file.FileName.Split(".")[1].ToLower());
                 var fullPath = uploadPath + fileName;
-
-                // imagePath = imagePath + @"\";
-                //filePath =  Path.Combine(@"~/", fileName);
-                filePath = fileName;
 
                 using (var fileStream = new FileStream(fullPath, FileMode.Create))
                 {
                     await file.CopyToAsync(fileStream);
                 }
-
-                //ViewData["FileLocation"] = filePath;
             }
-            return filePath;
+            return fileName;
         }
     }
 }
