@@ -15,6 +15,8 @@ using NPOI.XSSF.UserModel;
 
 namespace Louis.Controllers
 {
+    [LouisExceptionFilter]
+    [Log]
     public class MyProductsController : Controller
     {
         private readonly IProductService _productService;

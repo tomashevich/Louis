@@ -96,6 +96,7 @@ namespace Louis
                 Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Upload\\Images"))
                  
             });
+
             // Register the Swagger generator and the Swagger UI middlewares
             app.UseOpenApi();
             app.UseSwaggerUi3();

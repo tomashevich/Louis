@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Louis.Controllers
 {
+    [Log]
+    [LouisExceptionFilter]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -28,7 +30,6 @@ namespace Louis.Controllers
         [HttpGet]
         public async Task<IEnumerable<Product>> Get()
         {
-            _logger.LogInformation("GET: api/Products requested... ");
             return  await _productService.GetAll();
         }
 
@@ -40,7 +41,6 @@ namespace Louis.Controllers
         [HttpGet("{id}", Name = "Get")]
         public async Task<Product> Get(Guid id)
         {
-            _logger.LogInformation($"GET: api/Products/{id} requested... ");
             return await _productService.GetById(id);
         }
 
@@ -52,7 +52,6 @@ namespace Louis.Controllers
         [HttpPost]
         public async Task Post([FromBody] Product product)
         {
-            _logger.LogInformation($"POST: api/Product Id:{product.Id} requested... ");
             product.ModifiedOn = DateTime.Now;
             await _productService.Add(product);
         }
@@ -65,7 +64,6 @@ namespace Louis.Controllers
         [HttpPut("{id}")]
         public async Task<StatusCodeResult> Put(Guid id, [FromBody] Product updated)
         {
-            _logger.LogInformation($" PUT: api/Product Id:{updated.Id} requested... ");
             var existing =  await _productService.GetById(id);
             if (existing != null)
             {
@@ -90,7 +88,6 @@ namespace Louis.Controllers
         [HttpDelete("{id}")]
         public async Task Delete(Guid id)
         {
-            _logger.LogInformation($"// DELETE: api/Product/{id} requested... ");
             await _productService.Delete(id);
         }
     }
