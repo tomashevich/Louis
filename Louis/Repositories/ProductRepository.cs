@@ -31,9 +31,9 @@ namespace Louis.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<Product> Get(Expression<Func<Product, bool>> predicate)
+        public async Task<IEnumerable<Product>> Get(Expression<Func<Product, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await _context.Product.Where(predicate).ToListAsync();            
         }
 
         public async Task<IEnumerable<Product>> GetAll()

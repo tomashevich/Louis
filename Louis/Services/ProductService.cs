@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Louis.Entities;
 using Louis.Repositories;
@@ -24,6 +25,11 @@ namespace Louis.Services
         public async Task Delete(Guid id)
         {
             await _productRepository.Delete(id);
+        }
+
+        public async Task<IEnumerable<Product>> Get(Expression<Func<Product, bool>> predicate)
+        {
+            return await _productRepository.Get(predicate);
         }
 
         public async Task<IEnumerable<Product>> GetAll()

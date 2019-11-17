@@ -42,6 +42,15 @@ namespace Louis.Controllers
             var models = products.Select(p => _mapper.Map<Models.Product>(p));
             return View(models);
         }
+        // GET: Search
+        public async Task<IActionResult> Search(string searchstring)
+        {
+            var products = await _productService.Get(p => p.Name.Contains(searchstring) 
+                                                            || p.Code.Contains(searchstring));
+            var models = products.Select(p => _mapper.Map<Models.Product>(p));
+            ViewData["SearchString"] = searchstring;
+            return View("Index", models);
+        }
 
         // GET: MyProducts/Details/5
         public async Task<IActionResult> Details(Guid? id)
