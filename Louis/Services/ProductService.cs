@@ -45,7 +45,5 @@ namespace Louis.Services
         {
             await _productRepository.Update(product);
         }
-
-       
     }
 }

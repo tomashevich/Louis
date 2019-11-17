@@ -66,6 +66,11 @@ namespace Louis
 
             // Register the Swagger services
             services.AddSwaggerDocument();
+
+            services.AddApiVersioning(options => {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

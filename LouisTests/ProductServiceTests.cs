@@ -39,5 +39,7 @@ namespace LouisTests
             //Assert
             Assert.AreEqual(product, result);
         }
+
+        //... other ProductService methods as simple as mentioned.
     }
 }
