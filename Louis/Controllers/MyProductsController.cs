@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Louis.Data;
 using Louis.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -18,15 +17,13 @@ namespace Louis.Controllers
 {
     public class MyProductsController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
         private readonly IHostingEnvironment _env;
         private readonly ILogger<MyProductsController> _logger;
 
-        public MyProductsController(ApplicationDbContext context, IProductService productService, IMapper mapper, IHostingEnvironment environment, ILogger<MyProductsController> logger)
+        public MyProductsController( IProductService productService, IMapper mapper, IHostingEnvironment environment, ILogger<MyProductsController> logger)
         {
-            _context = context;
             _productService = productService;
             _mapper = mapper;
             _env = environment;
@@ -50,7 +47,8 @@ namespace Louis.Controllers
         public async Task<IActionResult> Search(string searchstring)
         {
             var products = await _productService.Get(p => p.Name.Contains(searchstring) 
-                                                            || p.Code.Contains(searchstring));
+                                                       || p.Code.Contains(searchstring));
+
             var models = products.Select(p => _mapper.Map<Models.Product>(p));
             ViewData["SearchString"] = searchstring;
             return View("Index", models);
@@ -89,16 +87,10 @@ namespace Louis.Controllers
                     await _productService.Add(_mapper.Map<Entities.Product>(product));
                     return RedirectToAction(nameof(Index));
                 }
-                catch (ArgumentException ex)
+                catch (Exception ex)
                 {
                     _logger.LogError(ex.Message);
                     ViewData["ErrorMessage"] = ex.Message;
-                    return View("Create", product);
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    _logger.LogError(ex.Message);
-                    throw;
                 }
             }
             return View(product);
@@ -142,18 +134,13 @@ namespace Louis.Controllers
                     }
                     await _productService.Update(productToSave);
                 }
-                catch (ArgumentException ex)
+                catch (Exception ex)
                 {
                     _logger.LogError(ex.Message);
                     ViewData["ErrorMessage"] = ex.Message;
-                    return View("Edit", product);
+                    return View(product);
                 }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    _logger.LogError(ex.Message);
-                    throw;
-                }
-                              
+                                            
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
