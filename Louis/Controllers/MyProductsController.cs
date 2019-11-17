@@ -92,7 +92,7 @@ namespace Louis.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Code,Name,Photo,Price,LastUpdated")] Models.Product product)
+        public async Task<IActionResult> Create([Bind("Id,Code,Name,Photo,IsPriceConfirmed,Price,LastUpdated")] Models.Product product)
         {
             if (ModelState.IsValid)
             {
@@ -126,7 +126,7 @@ namespace Louis.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,Name,Photo,Price,LastUpdated")] Models.Product product, IFormFile file)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,Name,Photo,Price,IsPriceConfirmed,LastUpdated")] Models.Product product, IFormFile file)
         {
             if (id != product.Id)
             {
