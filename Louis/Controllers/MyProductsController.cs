@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+
 
 namespace Louis.Controllers
 {
@@ -42,6 +45,15 @@ namespace Louis.Controllers
             var models = products.Select(p => _mapper.Map<Models.Product>(p));
             return View(models);
         }
+
+        public async Task<IActionResult> Export()
+        {
+            var products = await _productService.GetAll();
+            var models = products.Select(p => _mapper.Map<Models.Product>(p));
+            return ComposeExcel(models);
+        }
+
+
         // GET: Search
         public async Task<IActionResult> Search(string searchstring)
         {
@@ -196,6 +208,31 @@ namespace Louis.Controllers
                 }
             }
             return fileName;
+        }
+
+        public  FileContentResult ComposeExcel(IEnumerable<Models.Product> products)
+        {
+            IWorkbook wb = new XSSFWorkbook();
+            using (var stream = new MemoryStream())
+            {
+          
+                ISheet sheet = wb.CreateSheet("Sheet1");
+                ICreationHelper cH = wb.GetCreationHelper();
+                int rowIndex = 0;
+                foreach (var p in products)
+                {
+                    IRow row = sheet.CreateRow(rowIndex);
+
+                    //Add headers?           
+                    row.CreateCell(0).SetCellValue(cH.CreateRichTextString(p.Code.ToString()));
+                    row.CreateCell(1).SetCellValue(cH.CreateRichTextString(p.Name.ToString()));
+                    row.CreateCell(2).SetCellValue(cH.CreateRichTextString(p.Price.ToString()));
+                    row.CreateCell(3).SetCellValue(cH.CreateRichTextString(p.LastUpdated.ToString()));
+                    rowIndex++;
+                }
+                wb.Write(stream);
+                return File(stream.ToArray(), "application/vnd.ms-excel");
+            }
         }
     }
 }

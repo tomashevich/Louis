@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Louis.Entities;
 using Louis.Repositories;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Louis.Services
 {
@@ -46,5 +50,7 @@ namespace Louis.Services
         {
             await _productRepository.Update(product);
         }
+
+       
     }
 }
