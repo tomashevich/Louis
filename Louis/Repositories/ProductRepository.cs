@@ -19,7 +19,7 @@ namespace Louis.Repositories
         }
         public async Task Add(Product entity)
         {
-            if (UniqueCode(entity.Code))
+            if (UniqueCode(entity.Code, entity.Id))
             {
                 entity.Id = Guid.NewGuid();
                 _context.Add(entity);
@@ -56,7 +56,7 @@ namespace Louis.Repositories
 
         public async Task Update(Product entity)
         {
-            if (UniqueCode(entity.Code) && ProductExists(entity.Id))
+            if (UniqueCode(entity.Code, entity.Id) && ProductExists(entity.Id))
             {
                 _context.Update(entity);
                 await _context.SaveChangesAsync();
@@ -71,9 +71,9 @@ namespace Louis.Repositories
             return _context.Product.Any(e => e.Id == id);
         }
 
-        private bool UniqueCode(string code)
+        private bool UniqueCode(string code,Guid id)
         {
-            return ! _context.Product.Any(e => e.Code == code);
+            return ! _context.Product.Any(e => e.Code == code && e.Id!=id);
         }
     }
 }

@@ -17,9 +17,8 @@ namespace Louis.mapping
                 .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.ImageUrl));
 
             CreateMap<Models.Product, Entities.Product>()
-                  .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => src.LastUpdated))
-            
-                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Photo));
+                .ForMember(dest => dest.ModifiedOn, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Photo));
           
         }
     }

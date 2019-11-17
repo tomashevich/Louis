@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Louis.Data;
-using Louis.Models;
-using Louis.Entities;
-using Louis.Repositories;
 using Louis.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -17,7 +13,6 @@ using System.IO;
 using Microsoft.Extensions.Logging;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-
 
 namespace Louis.Controllers
 {
@@ -38,7 +33,6 @@ namespace Louis.Controllers
             _logger = logger;
         }
 
-        // GET: MyProducts
         public async Task<IActionResult> Index()
         {           
             var products = await _productService.GetAll();
@@ -52,9 +46,7 @@ namespace Louis.Controllers
             var models = products.Select(p => _mapper.Map<Models.Product>(p));
             return ComposeExcel(models);
         }
-
-
-        // GET: Search
+        
         public async Task<IActionResult> Search(string searchstring)
         {
             var products = await _productService.Get(p => p.Name.Contains(searchstring) 
@@ -64,7 +56,6 @@ namespace Louis.Controllers
             return View("Index", models);
         }
 
-        // GET: MyProducts/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -81,18 +72,14 @@ namespace Louis.Controllers
             return View(_mapper.Map<Models.Product>(product));
         }
 
-        // GET: MyProducts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: MyProducts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Code,Name,Photo,IsPriceConfirmed,Price,LastUpdated")] Models.Product product)
+        public async Task<IActionResult> Create([Bind("Id,Code,Name,Photo,IsPriceConfirmed,Price")] Models.Product product)
         {
             if (ModelState.IsValid)
             {
@@ -117,7 +104,6 @@ namespace Louis.Controllers
             return View(product);
         }
 
-        // GET: MyProducts/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -134,12 +120,10 @@ namespace Louis.Controllers
             return View(_mapper.Map<Models.Product>(product));
         }
 
-        // POST: MyProducts/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,Name,Photo,Price,IsPriceConfirmed,LastUpdated")] Models.Product product, IFormFile file)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,Name,Photo,Price,IsPriceConfirmed")] Models.Product product, IFormFile file)
         {
             if (id != product.Id)
             {
@@ -150,7 +134,6 @@ namespace Louis.Controllers
             {
                 try
                 {
-
                     var productToSave = _mapper.Map<Entities.Product>(product);
                     if (file != null)
                     {
@@ -176,7 +159,6 @@ namespace Louis.Controllers
             return View(product);
         }
 
-        // GET: MyProducts/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -193,7 +175,6 @@ namespace Louis.Controllers
             return View(_mapper.Map<Models.Product>(product));
         }
 
-        // POST: MyProducts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
@@ -225,12 +206,11 @@ namespace Louis.Controllers
             return fileName;
         }
 
-        public  FileContentResult ComposeExcel(IEnumerable<Models.Product> products)
+        private FileContentResult ComposeExcel(IEnumerable<Models.Product> products)
         {
             IWorkbook wb = new XSSFWorkbook();
             using (var stream = new MemoryStream())
             {
-          
                 ISheet sheet = wb.CreateSheet("Sheet1");
                 ICreationHelper cH = wb.GetCreationHelper();
                 int rowIndex = 0;
