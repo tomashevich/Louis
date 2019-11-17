@@ -97,9 +97,22 @@ namespace Louis.Controllers
             if (ModelState.IsValid)
             {
                 product.Id = Guid.NewGuid();
-             
-                await _productService.Add(_mapper.Map<Entities.Product>(product));
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _productService.Add(_mapper.Map<Entities.Product>(product));
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ArgumentException ex)
+                {
+                    _logger.LogError(ex.Message);
+                    ViewData["ErrorMessage"] = ex.Message;
+                    return View("Create", product);
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    _logger.LogError(ex.Message);
+                    throw;
+                }
             }
             return View(product);
         }
@@ -146,9 +159,11 @@ namespace Louis.Controllers
                     }
                     await _productService.Update(productToSave);
                 }
-                catch (KeyNotFoundException)
+                catch (ArgumentException ex)
                 {
-                    return NotFound();
+                    _logger.LogError(ex.Message);
+                    ViewData["ErrorMessage"] = ex.Message;
+                    return View("Edit", product);
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {

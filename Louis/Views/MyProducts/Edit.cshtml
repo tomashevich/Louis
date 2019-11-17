@@ -9,6 +9,10 @@
 
 <h4>Product</h4>
 <hr />
+@if (ViewData["ErrorMessage"] != null)
+{
+    <label class="alert-danger"> @ViewData["ErrorMessage"]</label>
+}
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" runat="server" enctype="multipart/form-data">
@@ -29,7 +33,7 @@
                 <label asp-for="Price" class="control-label"></label>
 
                 <input asp-for="Price" class="form-control" />
-               
+
 
                 <span asp-validation-for="Price" class="text-danger"></span>
 
@@ -64,7 +68,7 @@
             </div>
 
         </form>
-     
+
     </div>
 </div>
 

@@ -19,9 +19,17 @@ namespace Louis.Repositories
         }
         public async Task Add(Product entity)
         {
-            entity.Id = Guid.NewGuid();
-            _context.Add(entity);
-            await _context.SaveChangesAsync();
+            if (UniqueCode(entity.Code))
+            {
+                entity.Id = Guid.NewGuid();
+                _context.Add(entity);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new ArgumentException("Product with this Code already exist.");
+            }
+
         }
 
         public async Task Delete(Guid id)
@@ -48,27 +56,24 @@ namespace Louis.Repositories
 
         public async Task Update(Product entity)
         {
-            try
+            if (UniqueCode(entity.Code) && ProductExists(entity.Id))
             {
                 _context.Update(entity);
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!ProductExists(entity.Id))
-                {
-                    throw new KeyNotFoundException();
-                   
-                }
-                else
-                {
-                    throw;
-                }
+                throw new ArgumentException("Can not find product or product with this Code already exist.");
             }
         }
         private bool ProductExists(Guid id)
         {
             return _context.Product.Any(e => e.Id == id);
+        }
+
+        private bool UniqueCode(string code)
+        {
+            return ! _context.Product.Any(e => e.Code == code);
         }
     }
 }
