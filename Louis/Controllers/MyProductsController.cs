@@ -213,12 +213,18 @@ namespace Louis.Controllers
             {
                 ISheet sheet = wb.CreateSheet("Sheet1");
                 ICreationHelper cH = wb.GetCreationHelper();
+
                 int rowIndex = 0;
+                IRow header = sheet.CreateRow(rowIndex);
+                header.CreateCell(0).SetCellValue(cH.CreateRichTextString("Code"));
+                header.CreateCell(1).SetCellValue(cH.CreateRichTextString("Name"));
+                header.CreateCell(2).SetCellValue(cH.CreateRichTextString("Price"));
+                header.CreateCell(3).SetCellValue(cH.CreateRichTextString("LastUpdated"));
+                rowIndex++;
+
                 foreach (var p in products)
                 {
                     IRow row = sheet.CreateRow(rowIndex);
-
-                    //Add headers?           
                     row.CreateCell(0).SetCellValue(cH.CreateRichTextString(p.Code.ToString()));
                     row.CreateCell(1).SetCellValue(cH.CreateRichTextString(p.Name.ToString()));
                     row.CreateCell(2).SetCellValue(cH.CreateRichTextString(p.Price.ToString()));
