@@ -13,6 +13,14 @@ namespace Louis.Data
             : base(options)
         {
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Product>()
+                .HasIndex(u => u.Code)
+                .IsUnique();
+        }
         public DbSet<Product> Product { get; set; }
     }
 }
