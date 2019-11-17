@@ -6,6 +6,12 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+<PropertyGroup>
+  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  <NoWarn>$(NoWarn);1591</NoWarn>
+</PropertyGroup>
+
+
   <ItemGroup>
     <Compile Remove="Data\Migrations\20191109114020_CreateProducts.cs" />
     <Compile Remove="Data\Migrations\20191109114020_CreateProducts.Designer.cs" />

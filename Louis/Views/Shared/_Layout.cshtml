@@ -27,6 +27,7 @@
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <a class="navbar-brand" asp-area="" asp-controller="MyProducts" asp-action="Index">Catalog</a>
+                    <a class="navbar-brand" href="~/swagger" >API</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -34,7 +35,7 @@
                 }
                 else
                 {
-                   <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
