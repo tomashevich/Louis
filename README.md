@@ -10,7 +10,7 @@ System requirements:
 
 ## Getting Started
 
-1. Download solution from Dev branch and open solution file Louis.sln with Visual Studio
+1. Clone or Download solution from Dev branch and open solution file Louis.sln with Visual Studio
 2. Apply migrations with 'Update-Database' in package management console.
 3. Run site with IIS Express
 4. Register new user.
